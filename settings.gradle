@@ -1,0 +1,3 @@
+rootProject.name = 'manualmending'
+
+include 'manualmending-common', 'manualmending-spigot', 'manualmending-sponge', 'manualmending-forge'

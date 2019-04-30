@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "minVersion": "0.7.8",
+    "package": "io.musician101.manualmending.sponge.mixin",
+    "refmap": "mixins.manualmending.refmap.json",
+    "target": "@env(DEFAULT)",
+    "compatibilityLevel": "JAVA_8",
+    "mixins": [
+        "MixinEntity",
+        "MixinEntityXpOrb"
+    ]
+}
