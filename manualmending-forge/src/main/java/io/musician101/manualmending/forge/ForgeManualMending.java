@@ -12,15 +12,15 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import net.minecraft.command.CommandSource;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Enchantments;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
@@ -34,7 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(Reference.MOD_ID)
-public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<CommandSource>, ItemStack, EntityPlayer> {
+public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<CommandSource>, ItemStack, PlayerEntity> {
 
     private final Logger logger = LogManager.getLogger(Reference.MOD_ID);
 
@@ -56,14 +56,14 @@ public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<Com
     @Override
     protected LiteralArgumentBuilder<CommandSource> mend() {
         return LiteralArgumentBuilder.<CommandSource>literal("mend").executes(context -> {
-            EntityPlayerMP player = context.getSource().asPlayer();
-            player.sendMessage(new TextComponentString("[ManualMending] Mending item...").setStyle(new Style().setColor(TextFormatting.GREEN)));
+            ServerPlayerEntity player = context.getSource().asPlayer();
+            player.sendMessage(new StringTextComponent("[ManualMending] Mending item...").setStyle(new Style().setColor(TextFormatting.GREEN)));
             ItemStack itemStack = player.getHeldItemMainhand();
             if (!itemStack.isEmpty() && itemStack.isDamaged() && EnchantmentHelper.getEnchantmentLevel(Enchantments.MENDING, itemStack) > 0) {
                 player.experienceTotal = mendItem(player.experienceTotal, itemStack);
             }
 
-            player.sendMessage(new TextComponentString("[ManualMending] Mending complete.").setStyle(new Style().setColor(TextFormatting.GREEN)));
+            player.sendMessage(new StringTextComponent("[ManualMending] Mending complete.").setStyle(new Style().setColor(TextFormatting.GREEN)));
             return 1;
         });
     }
@@ -72,10 +72,10 @@ public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<Com
     @Override
     protected LiteralArgumentBuilder<CommandSource> mendAll() {
         return LiteralArgumentBuilder.<CommandSource>literal("mendAll").executes(context -> {
-            EntityPlayerMP player = context.getSource().asPlayer();
-            player.sendMessage(new TextComponentString("[ManualMending] Mending items...").setStyle(new Style().setColor(TextFormatting.GREEN)));
+            ServerPlayerEntity player = context.getSource().asPlayer();
+            player.sendMessage(new StringTextComponent("[ManualMending] Mending items...").setStyle(new Style().setColor(TextFormatting.GREEN)));
             player.experienceTotal = mendItems(player.experienceTotal, player);
-            player.sendMessage(new TextComponentString("[ManualMending] Mending complete.").setStyle(new Style().setColor(TextFormatting.GREEN)));
+            player.sendMessage(new StringTextComponent("[ManualMending] Mending complete.").setStyle(new Style().setColor(TextFormatting.GREEN)));
             return 1;
         });
     }
@@ -86,10 +86,10 @@ public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<Com
         return LiteralArgumentBuilder.<CommandSource>literal("mendReload").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
             try {
                 getConfig().load();
-                context.getSource().sendFeedback(new TextComponentString("Config reloaded.").setStyle(new Style().setColor(TextFormatting.GREEN)), false);
+                context.getSource().sendFeedback(new StringTextComponent("Config reloaded.").setStyle(new Style().setColor(TextFormatting.GREEN)), false);
             }
             catch (IOException e) {
-                context.getSource().sendFeedback(new TextComponentString("An error occurred while attempting to reload the config.").setStyle(new Style().setColor(TextFormatting.RED)), false);
+                context.getSource().sendFeedback(new StringTextComponent("An error occurred while attempting to reload the config.").setStyle(new Style().setColor(TextFormatting.RED)), false);
                 logger.error("An error occurred while attempting to reload the config.", e);
             }
 
@@ -106,12 +106,12 @@ public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<Com
     }
 
     @Override
-    public int mendItems(int xp, @Nonnull EntityPlayer player) {
+    public int mendItems(int xp, @Nonnull PlayerEntity player) {
         if (xp <= 0) {
             return 0;
         }
 
-        InventoryPlayer inv = player.inventory;
+        PlayerInventory inv = player.inventory;
         List<ItemStack> items = new ArrayList<>();
         if (getConfig().repairAll()) {
             items.addAll(inv.mainInventory);
@@ -119,7 +119,7 @@ public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<Com
             items.addAll(inv.offHandInventory);
         }
         else {
-            items.addAll(Enchantments.MENDING.getEntityEquipment(player));
+            items.addAll(Enchantments.MENDING.getEntityEquipment(player).values());
         }
 
         items.removeIf(itemStack -> itemStack.isEmpty() || !itemStack.isDamaged() || EnchantmentHelper.getEnchantmentLevel(Enchantments.MENDING, itemStack) == 0);
@@ -144,8 +144,8 @@ public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<Com
     private void onPickUpXP(PlayerPickupXpEvent event) {
         if (getConfig().repairAll()) {
             event.setCanceled(true);
-            EntityXPOrb xpOrb = event.getOrb();
-            EntityPlayer player = event.getEntityPlayer();
+            ExperienceOrbEntity xpOrb = event.getOrb();
+            PlayerEntity player = event.getPlayer();
             player.xpCooldown = 2;
             player.onItemPickup(xpOrb, 1);
             int xp = mendItems(xpOrb.getXpValue(), player);

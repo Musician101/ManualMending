@@ -1,5 +1,5 @@
 name: ManualMending
-api-version: "1.13"
+api-version: '1.14'
 version: @version@
 main: io.musician101.manualmending.spigot.SpigotManualMending
 authors: [Musician101]
