@@ -7,16 +7,13 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
-}
-
-repositories {
     mavenLocal()
 }
 
 dependencies {
     compile project(':manualmending-common')
-    compile 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
-    compile 'org.spigotmc:spigot:1.14.4-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens

@@ -23,7 +23,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraftforge.event.entity.player.PlayerXpEvent.PickupXp;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.common.Mod;
@@ -141,7 +141,7 @@ public class ForgeManualMending extends ManualMending<LiteralArgumentBuilder<Com
         return xp - roundAverage(i / ratio);
     }
 
-    private void onPickUpXP(PlayerPickupXpEvent event) {
+    private void onPickUpXP(PickupXp event) {
         if (getConfig().repairAll()) {
             event.setCanceled(true);
             ExperienceOrbEntity xpOrb = event.getOrb();

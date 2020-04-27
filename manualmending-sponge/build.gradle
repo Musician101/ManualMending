@@ -41,7 +41,7 @@ configurations {
 
 dependencies {
     shade project(':manualmending-common')
-    compile 'org.spongepowered:spongeapi:7.1.0'
+    compile 'org.spongepowered:spongeapi:7.2.0'
     compile 'org.spongepowered:mixin:0.7.3-SNAPSHOT'
 }
 
