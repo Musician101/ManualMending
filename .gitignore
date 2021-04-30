@@ -1,0 +1,13 @@
+.gradle/
+.idea/
+common/build/
+common/out/
+*.iml
+*.launch
+forge/build/
+forge/out/
+forge/run/
+logs/
+spigot/build/
+spigot/out/
+sponge/build/

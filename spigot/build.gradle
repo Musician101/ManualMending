@@ -1,0 +1,24 @@
+dependencies {
+    compile project(':common')
+    compile('io.musician101:bukkitier:1.0')
+    compile('io.musician101.musicianlibrary:spigot:4.1')
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'version': version
+    }
+}
+
+shadowJar {
+    dependencies {
+        include dependency(':common')
+        include dependency('io.musician101:')
+        include dependency('org.mongo:')
+        include dependency('org.spongepowered:')
+    }
+
+    def libPath = 'io.musician101.manualmending.lib.'
+    relocate 'io.musician101.bukkitier', "${libPath}io.musician101.bukkitier"
+    relocate 'org', "${libPath}org"
+}

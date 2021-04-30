@@ -1,0 +1,36 @@
+plugins {
+    id 'java-library'
+    id 'org.spongepowered.plugin' version '0.9.0'
+    id 'org.spongepowered.gradle.vanilla' version '0.2-SNAPSHOT'
+}
+
+minecraft {
+    version('1.16.5')
+    runs {
+        client()
+        server()
+    }
+}
+
+repositories {
+    maven {
+        name 'sponge'
+        url 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+}
+
+dependencies {
+    compile project(':common')
+    compile 'io.musician101.musicianlibrary:sponge:4.1'
+}
+
+shadowJar {
+    dependencies {
+        include dependency(':common')
+        include dependency('org.mongo:')
+    }
+
+    def libPath = 'io.musician101.manualmending.lib.'
+    relocate 'io.musician101.bukkitier', "${libPath}io.musician101.bukkitier"
+    relocate 'org.mongo', "${libPath}org.mongo"
+}

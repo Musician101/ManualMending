@@ -1,0 +1,20 @@
+{
+    "plugins": [
+        {
+            "loader": "java_plain",
+            "id": "manualmending",
+            "name": "Manual Mending",
+            "version": "1.0",
+            "main-class": "io.musician101.manualmending.sponge.SpongeManualMending",
+            "description": "Improved behavior for the vanilla Mending enchantment.",
+            "contributors": [{
+                "name": "Musician101",
+                "description": "Lead Developer"
+            }],
+            "dependencies": [{
+                "id": "spongeapi",
+                "version": "8.0.0"
+            }]
+        }
+    ]
+}
